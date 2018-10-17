@@ -29,17 +29,27 @@ def merge_clusters(clusters, min_pts):
                 merged_clusters.append(clusters[i])
             else:
                 already_listed = False
+                first_match_index = -1
                 for j in range(0, len(merged_clusters)):
                     if (not set(merged_clusters[j]).isdisjoint(set(clusters[i]))):
-                        merged_clusters[j] = list(set(merged_clusters[j]).union(set(clusters[i])))
                         already_listed = True
-                        break;
+                        if (first_match_index == -1):
+                            merged_clusters[j] = list(set(merged_clusters[j]).union(set(clusters[i])))
+                            first_match_index = j
+                        else:
+                            merged_clusters[first_match_index] = list(set(merged_clusters[first_match_index]).union(set(clusters[i])))
+                            merged_clusters[j] = []
                     else:
                         pass
                 if (not already_listed):
                     merged_clusters.append(clusters[i])
         else:
             pass
+    i = len(merged_clusters)-1
+    while (i >= 0):
+        if (len(merged_clusters[i]) == 0):
+            del merged_clusters[i]
+        i = i-1
     return merged_clusters
 
 def DBSCAN_predict(data, epsilon, min_pts):
